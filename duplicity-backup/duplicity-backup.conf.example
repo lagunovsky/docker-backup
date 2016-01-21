@@ -240,7 +240,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 # Do you want your backup to be encrypted? yes/no
 # If yes, please make sure you specify either PASSPHRASE or GPG_ENC_KEY/GPG_SIGN_KEY
 
-ENCRYPTION='yes'
+ENCRYPTION='no'
 
 # If you are NOT running this from a cron, comment this line out
 # and duplicity should prompt you for your password.
@@ -346,7 +346,7 @@ CLEAN_UP_VARIABLE="4"
 
 LOGDIR="/var/log/duplicity/"
 LOG_FILE="backup.log"
-LOG_FILE_OWNER="foobar_user_name:foobar_user_name"
+LOG_FILE_OWNER="root:root"
 
 # Note that if the configured LOGDIR does not exist it will be created
 # and its owner:group set to that of the configured LOG_FILE_OWNER.
