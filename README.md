@@ -1,15 +1,14 @@
 Docker container for backup data [![Build Status](https://travis-ci.org/lagun4ik/docker-backup.svg?branch=master)](https://travis-ci.org/lagun4ik/docker-backup)
 -------------
 
-## Start
-
-Create `duplicity-backup.conf` from `duplicity-backup/duplicity-backup.conf.example`
+## Create configuration file
 
 ```bash
 curl https://raw.githubusercontent.com/lagun4ik/docker-backup/master/duplicity-backup/duplicity-backup.conf.example -o duplicity-backup.conf
 ```
 
-Create container
+## Create container
+
 Change the settings in `duplicity-backup.conf`
 Add `-e GPG_PASSPHRASE=12345` for encrypt files (only for S3).
 
@@ -26,7 +25,7 @@ docker create --privileged \
 ```
 
 
-Start create backup (add to cron)
+## Creating backup (add to cron)
 ```bash
 docker start backup
 ```
