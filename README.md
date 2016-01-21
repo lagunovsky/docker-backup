@@ -13,7 +13,7 @@ Change the settings in `duplicity-backup.conf` and add task to cron
 
 ```bash
 docker run --rm -d --privileged \
-  -v ./duplicity-backup.conf:/duplicity-backup.conf \
+  -v PATCH_TO_CONF:/duplicity-backup.conf \
   -v BACKUP_DATA:/var/backup \
   -e AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID \
   -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY \
