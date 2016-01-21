@@ -15,5 +15,4 @@ ADD /duplicity-backup/duplicity-backup.sh /duplicity-backup.sh
 VOLUME /var/backup
 
 ADD ./s3cfg.sh /s3cfg.sh
-RUN chmod +x /s3cfg.sh
 ENTRYPOINT ["/s3cfg.sh"]
