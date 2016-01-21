@@ -292,7 +292,7 @@ GPG_SIGN_KEY="foobar_gpg_key"
 # Amazon S3 in Europe) `--s3-use-new-style` and `--s3-european-buckets` options
 # Be sure to separate your options with appropriate spacing.
 
-STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
+STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style --allow-source-mismatch"
 
 
 # ------------------------------------------------------------------------------
@@ -344,8 +344,8 @@ CLEAN_UP_VARIABLE="4"
 # I run this script as root, but save the log files under my user name --
 # just makes it easier for me to read them and delete them as needed.
 
-LOGDIR="/home/foobar_user_name/logs/test2/"
-LOG_FILE="duplicity-`date +%Y-%m-%d_%H-%M`.txt"
+LOGDIR="/var/log/duplicity/"
+LOG_FILE="backup.log"
 LOG_FILE_OWNER="foobar_user_name:foobar_user_name"
 
 # Note that if the configured LOGDIR does not exist it will be created
