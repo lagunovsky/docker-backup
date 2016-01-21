@@ -181,7 +181,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #
 # Simpler example with one location:
 
-INCLIST=( "/home/foobar_user_name/Documents/" )
+#INCLIST=( "/home/foobar_user_name/Documents/" )
 
 
 # ------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ INCLIST=( "/home/foobar_user_name/Documents/" )
 #        )
 # Simpler example with one location. Adapt it to your needs.
 
-EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
+#EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
 
 
 # ------------------------------------------------------------------------------
