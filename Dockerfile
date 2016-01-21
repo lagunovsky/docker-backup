@@ -10,13 +10,10 @@ RUN apt-get update \
 
 RUN apt-get install -y --no-install-recommends haveged apg python-boto python-paramiko s3cmd
 
-RUN { \
-		echo '[default]'; \
-		echo 'access_key=$AWS_ACCESS_KEY'; \
-		echo 'secret_key=$AWS_SECRET_KEY'; \
-	} > ~/.s3cfg
-
-
 ADD /duplicity-backup/duplicity-backup.sh /duplicity-backup.sh
 
 VOLUME /var/backup
+
+ADD ./s3cfg.sh /s3cfg.sh
+RUN chmod +x /s3cfg.sh
+ENTRYPOINT ["/s3cfg.sh"]
