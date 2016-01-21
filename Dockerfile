@@ -12,6 +12,7 @@ RUN apt-get install -y --no-install-recommends \
 ADD /duplicity-backup/duplicity-backup.sh /duplicity-backup.sh
 ADD ./s3cfg.sh /etc/my_init.d/s3cfg.sh
 
-RUN ln -sf /dev/stdout /var/log/duplicity/backup.log
+RUN mkdir -p /var/log/duplicity \
+    && ln -sf /dev/stdout /var/log/duplicity/backup.log
 
 VOLUME /var/backup
