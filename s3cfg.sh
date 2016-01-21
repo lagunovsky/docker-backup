@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$AWS_ACCESS_KEY_ID" ]
+if [ -n "$AWS_ACCESS_KEY_ID" ]
 then
 
   {
@@ -9,7 +9,7 @@ then
     echo "secret_key=$AWS_SECRET_ACCESS_KEY";
   } > ~/.s3cfg
 
-  if [ -z "$AWS_LOCATION" ]
+  if [ -n "$AWS_LOCATION" ]
   then
     echo "bucket_location = $AWS_LOCATION" >> ~/.s3cfg
   fi
