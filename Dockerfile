@@ -4,7 +4,7 @@ MAINTAINER ivan@lagunovsky.com
 
 RUN apt-get update \
     && apt-get upgrade -y \
-	&& apt-get install -y --no-install-recommends duplicity ca-certificates s3cmd haveged apg python-boto python-paramiko cron \
+    && apt-get install -y --no-install-recommends duplicity ca-certificates s3cmd haveged apg python-boto python-paramiko cron \
     && apt-get autoclean 
 
 ADD /duplicity-backup/duplicity-backup.sh /duplicity-backup.sh
