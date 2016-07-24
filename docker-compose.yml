@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  backup:
+    image: lagun4ik/docker-backup
+    privileged: true
+    restart: always
+    volumes:
+      - :/duplicity-backup.conf
+      - :/var/backup
+    environment:
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+      - CRON_SCHEDULE=0 1 * * *
