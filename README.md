@@ -1,5 +1,7 @@
-Docker container for backup data [![Build Status](https://travis-ci.org/lagun4ik/docker-backup.svg?branch=master)](https://travis-ci.org/lagun4ik/docker-backup)
+Docker container for incremental, encrypted backups (Amazon S3, Google Cloud Storage, FTP, SFTP, SCP, rsync, file...). [![Build Status](https://travis-ci.org/lagun4ik/docker-backup.svg?branch=master)](https://travis-ci.org/lagun4ik/docker-backup)
 -------------
+
+This container based on [duplicity-backup.sh](https://github.com/zertrin/duplicity-backup).
 
 ## Create and change configuration file
 
