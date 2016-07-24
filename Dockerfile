@@ -10,9 +10,6 @@ RUN apt-get update \
 ADD /duplicity-backup/duplicity-backup.sh /duplicity-backup.sh
 RUN chmod +x /duplicity-backup.sh
 
-ADD ./s3cfg.sh /etc/my_init.d/s3cfg.sh
-RUN chmod +x /etc/my_init.d/s3cfg.sh
-
 ADD ./start.sh /start.sh
 RUN chmod +x /start.sh
 
