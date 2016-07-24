@@ -1,4 +1,4 @@
-FROM ubuntu:14
+FROM ubuntu:trusty
 
 MAINTAINER ivan@lagunovsky.com
 
