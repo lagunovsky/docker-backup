@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:14
 
 MAINTAINER ivan@lagunovsky.com
 
