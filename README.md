@@ -7,6 +7,13 @@ Docker container for backup data [![Build Status](https://travis-ci.org/lagun4ik
 curl https://raw.githubusercontent.com/lagun4ik/docker-backup/master/duplicity-backup/duplicity-backup.conf.example -o duplicity-backup.conf
 ```
 
+## Environment variables for AWS
+```yml
+  - AWS_ACCESS_KEY_ID=
+  - AWS_SECRET_ACCESS_KEY=
+  - AWS_LOCATION=
+```
+
 ## Use docker-compose
 ```yml
 version: '2'
@@ -20,7 +27,5 @@ services:
       - :/duplicity-backup.conf
       - :/var/backup
     environment:
-      - AWS_ACCESS_KEY_ID=
-      - AWS_SECRET_ACCESS_KEY=
       - CRON_SCHEDULE=0 1 * * *
 ```
