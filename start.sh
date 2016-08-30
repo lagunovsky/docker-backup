@@ -33,7 +33,7 @@ else
     if [[ ! -e "$LOGFIFO" ]]; then
         mkfifo "$LOGFIFO"
     fi
-    echo -e "$CRON_SCHEDULE /duplicity-backup.sh --backup --config /duplicity-backup.conf > $LOGFIFO 2>&1" | crontab -
+    echo -e "$CRON_SCHEDULE cd /var/backup; /duplicity-backup.sh --backup --config /duplicity-backup.conf > $LOGFIFO 2>&1" | crontab -
     crontab -l
     cron
     tail -f "$LOGFIFO"
