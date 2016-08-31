@@ -13,8 +13,7 @@ RUN chmod +x /duplicity-backup.sh
 ADD ./start.sh /start.sh
 RUN chmod +x /start.sh
 
-RUN mkdir -p /var/log/duplicity \
-    && ln -sf /dev/stdout /var/log/duplicity/backup.log
+RUN mkdir -p /var/log/duplicity && touch /var/log/duplicity/backup.log
 
 VOLUME /var/backup
 
