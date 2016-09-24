@@ -1,28 +1,28 @@
 Docker container for incremental, encrypted backups (Amazon S3, Google Cloud Storage, FTP, SFTP, SCP, rsync, file...). [![Build Status](https://travis-ci.org/lagun4ik/docker-backup.svg?branch=master)](https://travis-ci.org/lagun4ik/docker-backup)
 -------------
 
-This container based on [duplicity-backup.sh](https://github.com/zertrin/duplicity-backup).
+This container based on [duplicity-backup](https://github.com/zertrin/duplicity-backup)
 
 # Configuring
-* [Exclude list of directories](exclude-list-of-directories)
+* [Exclude list of directories](#exclude-list-of-directories)
 * Notifications
-  * [IFTTT](IFTTT)
-  * [Slack](Slack)
-  * [Mail](Mail)
-* [S3](s3)
-* [Google Cloud storage](google-cloud-storage)
-* [Openstack object storage](openstack-object-storage)
-* [FTP](ftp)
-* [FTPS](ftps)
-* [FTPES](ftpes)
-* [RSYNC](rsync)
-* [SCP](scp)
-* [SSH](ssh)
-* [SFTP](sftp)
-* [FILE](file)
-* [IMAP[s]](imap_s)
-* [WEBDAV[s]](webdav_s)
-* [GDOCS](gdocs)
+  * [IFTTT](#IFTTT)
+  * [Slack](#Slack)
+  * [Mail](#Mail)
+* [S3](#s3)
+* [Google Cloud storage](#google-cloud-storage)
+* [Openstack object storage](#openstack-object-storage)
+* [FTP](#ftp)
+* [FTPS](#ftps)
+* [FTPES](#ftpes)
+* [RSYNC](#rsync)
+* [SCP](#scp)
+* [SSH](#ssh)
+* [SFTP](#sftp)
+* [FILE](#file)
+* [IMAP[s]](#imap_s)
+* [WEBDAV[s]](#webdav_s)
+* [GDOCS](#gdocs)
 
 
 ## Use docker-compose
