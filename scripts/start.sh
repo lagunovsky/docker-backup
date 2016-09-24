@@ -85,8 +85,12 @@ if [ -n "$IFTTT_KEY" ]
 then
     sed -i 's|IFTTT_KEY=""|IFTTT_KEY="'"$IFTTT_KEY"'"|g' /duplicity-backup.conf
     sed -i 's|IFTTT_MAKER_EVENT="duplicity"|IFTTT_MAKER_EVENT="'"$IFTTT_MAKER_EVENT"'"|g' /duplicity-backup.conf
-    sed -i 's|IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY"|IFTTT_HOOK_URL="'"$IFTTT_HOOK_URL"'"|g' /duplicity-backup.conf
     sed -i 's|IFTTT_VALUE2=""|IFTTT_VALUE2="'"$IFTTT_VALUE2"'"|g' /duplicity-backup.conf
+fi
+
+if [ -n "$IFTTT_HOOK_URL" ]
+then
+    sed -i 's|IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY"|IFTTT_HOOK_URL="'"$IFTTT_HOOK_URL"'"|g' /duplicity-backup.conf
 fi
 
 if [ -n "$DEST_S3" ]

@@ -47,7 +47,7 @@ services:
 
 ## Notifications
 ```yml
-  - NOTIFICATION_SERVICE="" # Possible values for NOTIFICATION_SERVICE are: slack, pushover, ifttt
+  - NOTIFICATION_SERVICE="" # Possible values for NOTIFICATION_SERVICE are slack, ifttt
   - NOTIFICATION_FAILURE_ONLY="yes"
 ```
 
@@ -55,7 +55,6 @@ services:
 ```yml
   - IFTTT_KEY="" # Key for MAKER channel at IFTTT
   - IFTTT_MAKER_EVENT="duplicity" # name the event to trigger at IFTTT Maker Channel
-  - IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY" # ONLY change this if IFTTT changes it
   - IFTTT_VALUE2="" # general purpose value to pass to your maker channel (optional)
 ```
 
