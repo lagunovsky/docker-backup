@@ -3,6 +3,19 @@ Docker container for incremental, encrypted backups (Amazon S3, Google Cloud Sto
 
 This container based on [duplicity-backup](https://github.com/zertrin/duplicity-backup)
 
+**View help:**
+
+    docker-compose exec backup
+
+**Run an incremental backup:**
+
+    docker-compose exec backup --backup
+
+**Restore your entire backup:**
+
+    # You will be prompted for a restore directory
+    docker-compose exec backup --restore
+
 # Configuring
 * [Exclude list of directories](#exclude-list-of-directories)
 * Notifications
@@ -24,28 +37,12 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 * [WEBDAV[s]](#webdav_s)
 * [GDOCS](#gdocs)
 
-
-## Use docker-compose
-```yml
-version: '2'
-
-services:
-  backup:
-    image: lagun4ik/docker-backup
-    privileged: true
-    restart: always
-    volumes:
-      - :/var/backup
-    environment:
-      - CRON_SCHEDULE=0 1 * * *
-```
-
-## Exclude list of directories
+### Exclude list of directories
 ```yml
   - EXCLUDE="/var/backup/*/Trash /var/backup/**.DS_Store"
 ```
 
-## Notifications
+### Notifications
 ```yml
   - NOTIFICATION_SERVICE="" # Possible values for NOTIFICATION_SERVICE are slack, ifttt
   - NOTIFICATION_FAILURE_ONLY="yes"
@@ -74,7 +71,7 @@ services:
   - EMAIL_FAILURE_ONLY="yes"
 ```
 
-## S3
+### S3
 ```yml
   - DEST_S3=foobar-backup-bucket/backup-folder/
   - AWS_ACCESS_KEY_ID=
@@ -82,20 +79,20 @@ services:
   - AWS_LOCATION=
 ```
 
-## GOOGLE CLOUD STORAGE
+### GOOGLE CLOUD STORAGE
 ```yml
   - DEST_GS=foobar-backup-bucket/backup-folder/
   - GS_ACCESS_KEY_ID=
   - GS_SECRET_ACCESS_KEY=
 ```
 
-## GDOCS
+### GDOCS
 ```yml
   - GDOCS=foobar_google_account/some_dir
 ```
 
 
-## OPENSTACK OBJECT STORAGE
+### OPENSTACK OBJECT STORAGE
 ```yml
   - DEST_SWIFT=foobar_swift_container/some_dir
   - SWIFT_USERNAME=foobar_swift_tenant:foobar_swift_username
@@ -104,52 +101,52 @@ services:
   - SWIFT_AUTHVERSION=
 ```
 
-## FTP
+### FTP
 ```yml
   - DEST_FTP=user[:password]@other.host[:port]/some_dir
 ```
 
-## FTPS
+### FTPS
 ```yml
   - DEST_FTPS=user[:password]@other.host[:port]/some_dir
 ```
 
-## FTPES
+### FTPES
 ```yml
   - DEST_FTPES=user[:password]@other.host[:port]/some_dir
 ```
 
-## RSYNC
+### RSYNC
 ```yml
   - DEST_RSYNC=user@host.com[:port]//absolute_path
 ```
 
-## SCP
+### SCP
 ```yml
   - DEST_SCP=user[:password]@other.host[:port]/[/]some_dir
 ```
 
-## SSH
+### SSH
 ```yml
   - DEST_SSH=user[:password]@other.host[:port]/[/]some_dir
 ```
 
-## SFTP
+### SFTP
 ```yml
   - DEST_SFTP=user[:password]@other.host[:port]/[/]some_dir
 ```
 
-## FILE
+### FILE
 ```yml
   - DEST_FILE=/home/foobar_user_name/new-backup-test/
 ```
 
-## IMAP_S
+### IMAP_S
 ```yml
   - DEST_IMAP_S=user[:password]@host.com[/from_address_prefix]
 ```
 
-## WEBDAV_s
+### WEBDAV_s
 ```yml
-  - DEST_WEBDAV_s=user[:password]@other.host[:port]/some_dir
+  - DEST_WEBDAV_S=user[:password]@other.host[:port]/some_dir
 ```
