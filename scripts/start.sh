@@ -95,7 +95,7 @@ fi
 
 if [ -n "$HOST_NAME" ]
 then
-    sed -i 's|HOSTNAME=$(hostname -f)|HOSTNAME='"$HOST_NAME"'|g' /duplicity-backup/duplicity-backup.conf
+    sed -i 's|HOSTNAME=$(hostname -f)|HOSTNAME="'"$HOST_NAME"'"|g' /duplicity-backup/duplicity-backup.conf
 fi
 
 if [ -n "$ALLOW_SOURCE_MISMATCH" ]
