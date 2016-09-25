@@ -56,7 +56,7 @@ fi
 
 if [ -n "$EXCLIST" ]
 then
-    sed -i 's|#DEST="EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )|EXCLIST=( '"$EXCLIST"' )|g' /duplicity-backup/duplicity-backup.conf
+    sed -i 's|#EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )|EXCLIST=( '"$EXCLIST"' )|g' /duplicity-backup/duplicity-backup.conf
 fi
 
 if [ -n "$EMAIL_TO" ]
@@ -135,7 +135,7 @@ if [ $# -eq 0 ]
 then
     echo -e "$CRON_SCHEDULE /duplicity-backup.sh --backup > /var/log/cron.fifo 2>&1" | crontab -
     crond
-    tail -f "$LOGFIFO"
+    tail -f /var/log/cron.fifo
 else
-    exec /duplicity-backup/duplicity-backup.sh --backup
+    exec /duplicity-backup/duplicity-backup.sh ${*}
 fi

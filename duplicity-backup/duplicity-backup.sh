@@ -36,7 +36,7 @@
 #       the same folder as the script, if the option -c is not given).
 #       It is DEPRECATED to edit this.
 
-CONFIG="/duplicity-backup.conf"
+CONFIG="/duplicity-backup/duplicity-backup.conf"
 
 ##############################################################
 # Script Happens Below This Line - Shouldn't Require Editing #
