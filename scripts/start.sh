@@ -133,7 +133,7 @@ fi
 
 if [ $# -eq 0 ]
 then
-    echo -e "$CRON_SCHEDULE /duplicity-backup.sh --backup > /var/log/cron.fifo 2>&1" | crontab -
+    echo -e "$CRON_SCHEDULE /duplicity-backup/duplicity-backup.sh --backup > /var/log/cron.fifo 2>&1" | crontab -
     crond
     tail -f /var/log/cron.fifo
 else
