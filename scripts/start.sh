@@ -93,6 +93,16 @@ then
     sed -i 's|IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY"|IFTTT_HOOK_URL="'"$IFTTT_HOOK_URL"'"|g' /duplicity-backup/duplicity-backup.conf
 fi
 
+if [ -n "$HOST_NAME" ]
+then
+    sed -i 's|HOSTNAME=$(hostname -f)|HOSTNAME='"$HOST_NAME"'|g' /duplicity-backup/duplicity-backup.conf
+fi
+
+if [ -n "$ALLOW_SOURCE_MISMATCH" ]
+then
+    sed -i 's|"--full-if-older-than 14D --s3-use-new-style"|"--full-if-older-than 14D --s3-use-new-style --allow-source-mismatch"|g' /duplicity-backup/duplicity-backup.conf
+fi
+
 if [ -n "$DEST_S3" ]
 then
     sed -i 's|#DEST="s3+http://foobar-backup-bucket/backup-folder/"|DEST="s3+http://'"$DEST_S3"'"|g' /duplicity-backup/duplicity-backup.conf

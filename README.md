@@ -17,6 +17,7 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
     docker-compose exec backup --restore
 
 # Configuring
+* [Base](#base)
 * [Exclude list of directories](#exclude-list-of-directories)
 * Notifications
   * [IFTTT](#IFTTT)
@@ -37,6 +38,12 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 * [WEBDAV[s]](#webdav_s)
 * [GDOCS](#gdocs)
 
+### Base
+```yml
+  - CRON_SCHEDULE=0 1 * * * # every day
+  - HOST_NAME= # default container id
+  - ALLOW_SOURCE_MISMATCH="yes" # for disable check hostname
+```
 ### Exclude list of directories
 ```yml
   - EXCLUDE="/var/backup/*/Trash /var/backup/**.DS_Store"
