@@ -30,7 +30,7 @@ COPY ./duplicity-backup /duplicity-backup
 COPY ./scripts /scripts
 
 RUN mkfifo /var/log/cron.fifo \
-    && chmod +x /scripts \
+    && chmod +x /scripts/start.sh \
     && chmod +x /duplicity-backup/duplicity-backup.sh
 
 ENTRYPOINT ["/scripts/start.sh"]

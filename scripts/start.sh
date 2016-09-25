@@ -1,8 +1,5 @@
 #!/bin/bash
 
-exec /duplicity-backup/duplicity-backup.sh ${*}
-exit
-
 set -e
 
 CRON_SCHEDULE=${CRON_SCHEDULE:-0 1 * * *}
