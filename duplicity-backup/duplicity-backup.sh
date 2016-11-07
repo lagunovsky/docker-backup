@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012 Marc Gallet.
+# Copyright (c) 2012-2016 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,10 @@
 # http://damontimm.com/code/dt-s3-backup (for the original program by Damon Timm)
 #
 # Latest code available at:
-# http://github.com/zertrin/duplicity-backup
+# http://github.com/zertrin/duplicity-backup.sh
+#
+# List of contributors:
+# https://github.com/zertrin/duplicity-backup.sh/graphs/contributors
 #
 # ---------------------------------------------------------------------------- #
 
@@ -78,12 +81,13 @@ echo "USAGE:
                                the current working directory
 
     -q, --quiet                silence most of output messages, except errors and output
-                               that is intended for interactive usage. Silenced output
+                               that are intended for interactive usage. Silenced output
                                is still logged in the logfile.
 
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
     -V, --version              print version information about this script and duplicity
+    -h, --help                 print this help and exit
 
   CURRENT SCRIPT VARIABLES:
   ========================
@@ -93,6 +97,7 @@ echo "USAGE:
     ROOT (root directory of backup) = ${ROOT}
     LOGFILE (log file path)         = ${LOGFILE}
 " >&6
+USAGE=1
 }
 
 DUPLICITY="$(which duplicity)"
@@ -114,7 +119,7 @@ version(){
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:t:bfvelsqndV-:" opt; do
+while getopts ":c:t:bfvelsqndhV-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and I don't want to impose GNU getopt dependancy)
@@ -169,6 +174,10 @@ while getopts ":c:t:bfvelsqndV-:" opt; do
         debug)
           ECHO=$(which echo)
         ;;
+        help)
+          usage
+          exit 0
+        ;;
         version)
           version
         ;;
@@ -189,6 +198,10 @@ while getopts ":c:t:bfvelsqndV-:" opt; do
     q) QUIET=1;;
     n) DRY_RUN="--dry-run ";; # dry run
     d) ECHO=$(which echo);; # debug
+    h)
+      usage
+      exit 0
+    ;;
     V) version;;
     :)
       echo "Option -${OPTARG} requires an argument." >&2
@@ -335,7 +348,7 @@ fi
 LOCKFILE=${LOGDIR}backup.lock
 
 if [ "${ENCRYPTION}" = "yes" ]; then
-  ENCRYPT="--gpg-options \"--no-show-photos\""
+  ENCRYPT="--gpg-options \"${GPG_OPTIONS}\""
   if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
     if [ "${HIDE_KEY_ID}" = "yes" ]; then
       ENCRYPT="${ENCRYPT} --hidden-encrypt-key=${GPG_ENC_KEY}"
@@ -1025,6 +1038,10 @@ case "${COMMAND}" in
 esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >&5
+
+if [ "${USAGE}" ]; then
+  exit 0
+fi
 
 if [ "${BACKUP_ERROR}" ]; then
   BACKUP_STATUS="ERROR"
