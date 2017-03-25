@@ -2,12 +2,6 @@
 
 set -e
 
-if [ -n "$RESTORE_PATH" ]
-then
-    exec /duplicity-backup/duplicity-backup.sh --restore ${RESTORE_PATH}
-else
-    CRON_SCHEDULE=${CRON_SCHEDULE:-0 1 * * *}
-
     if [ -n "$DEST_WEBDAV_S" ]
     then
         sed -i 's|#DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"|DEST="webdav[s]://'"$DEST_WEBDAV_S"'"|g' /duplicity-backup/duplicity-backup.conf
@@ -145,6 +139,12 @@ else
         sed -i 's|#GS_SECRET_ACCESS_KEY="foobar_gcs_secret_id"|GS_ACCESS_KEY_ID="'"$GS_SECRET_ACCESS_KEY"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
+
+if [ -n "$RESTORE_PATH" ]
+then
+    exec /duplicity-backup/duplicity-backup.sh --restore ${RESTORE_PATH}
+else
+    CRON_SCHEDULE=${CRON_SCHEDULE:-0 1 * * *}
     if [ $# -eq 0 ]
     then
         echo -e "$CRON_SCHEDULE /duplicity-backup/duplicity-backup.sh --backup > /var/log/cron.fifo 2>&1" | crontab -
