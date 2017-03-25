@@ -34,3 +34,4 @@ RUN mkfifo /var/log/cron.fifo \
     && chmod +x /duplicity-backup/duplicity-backup.sh
 
 ENTRYPOINT ["/scripts/entrypoint.sh"]
+CMD ["/duplicity-backup/duplicity-backup.sh"]
