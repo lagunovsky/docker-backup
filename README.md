@@ -7,16 +7,24 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 
     docker-compose run backup
 
-**Run an incremental backup:**
+**Force run an incremental backup:**
 
     docker-compose run backup --backup
 
-**Restore your entire backup:**
+**Force restore your entire backup:**
 
     # You will be prompted for a restore directory
     docker-compose run backup --restore [PATH]
+    
+**Restore the backup at startup**
+    
+    # Set the environment variable
+    RESTORE_PATH=
 
 # Configuring
+
+See `docker-compose.env.example`
+
 * [Base](#base)
 * [Exclude list of directories](#exclude-list-of-directories)
 * Notifications

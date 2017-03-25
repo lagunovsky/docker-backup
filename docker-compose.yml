@@ -3,10 +3,6 @@ version: '2'
 services:
   backup:
     image: lagun4ik/docker-backup
-    privileged: true
     restart: always
     volumes:
       - :/var/backup
-    environment:
-      - HOST_NAME=
-      - CRON_SCHEDULE=0 1 * * *
