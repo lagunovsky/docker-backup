@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.5
 
 MAINTAINER ivan@lagunovsky.com
 
