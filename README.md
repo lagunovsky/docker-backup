@@ -14,7 +14,7 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 **Restore your entire backup:**
 
     # You will be prompted for a restore directory
-    docker-compose run backup --restore
+    docker-compose run backup --restore [PATH]
 
 # Configuring
 * [Base](#base)
