@@ -5,16 +5,16 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 
 **View help:**
 
-    docker-compose exec backup
+    docker-compose run backup
 
 **Run an incremental backup:**
 
-    docker-compose exec backup --backup
+    docker-compose run backup --backup
 
 **Restore your entire backup:**
 
     # You will be prompted for a restore directory
-    docker-compose exec backup --restore
+    docker-compose run backup --restore
 
 # Configuring
 * [Base](#base)
