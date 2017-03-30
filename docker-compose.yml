@@ -2,7 +2,7 @@ version: '2'
 
 services:
   backup:
-    image: lagun4ik/docker-backup
+    image: lagun4ik/backup
     restart: always
     volumes:
       - :/var/backup
