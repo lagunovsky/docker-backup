@@ -34,7 +34,7 @@ set -e
 
     if [ -n "$DEST_RSYNC" ]
     then
-        sed -i 's|#DEST="rsync://user@host.com\[:port\]//absolute_path"|#DEST="rsync://'"$DEST_RSYNC"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="rsync://user@host.com\[:port\]//absolute_path"|DEST="rsync://'"$DEST_RSYNC"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_FTP" ]
