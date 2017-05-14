@@ -488,7 +488,7 @@ email_logfile()
       if [ ! -x "${MAILCMD}" ]; then
           echo -e "Email couldn't be sent. ${MAIL} not available." >&2
       else
-          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] ${LOG_FILE}"}
+          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} (${HOSTNAME}) ${LOG_FILE}"}
           case ${MAIL} in
             ssmtp)
               mailcmd_ssmtp;;
@@ -639,7 +639,7 @@ get_remote_file_size()
     "s3")
       FRIENDLY_TYPE_NAME="Amazon S3"
       if ${S3CMD_AVAIL} ; then
-          TMPDEST=$(echo "${DEST}" | cut -c 11-)
+          TMPDEST=$(echo "${DEST}" | cut -f 3- -d /)
           dest_scheme=$(echo "${DEST}" | cut -f -1 -d :)
           if [ "$dest_scheme" = "s3" ]; then
               # Strip off the host name, too.
