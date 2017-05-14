@@ -4,12 +4,12 @@ set -e
 
     if [ -n "$DEST_WEBDAV_S" ]
     then
-        sed -i 's|#DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"|DEST="webdav[s]://'"$DEST_WEBDAV_S"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="webdav\[s\]://user\[:password\]@other.host\[:port\]/some_dir"|DEST="webdav\[s\]://'"$DEST_WEBDAV_S"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_IMAP_S" ]
     then
-        sed -i 's|#DEST="imap[s]://user[:password]@host.com[/from_address_prefix]"|DEST="'"$DEST_IMAP_S"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="imap\[s\]://user\[:password\]@host.com\[/from_address_prefix\]"|DEST="'"$DEST_IMAP_S"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_FILE" ]
@@ -19,37 +19,37 @@ set -e
 
     if [ -n "$DEST_SCP" ]
     then
-        sed -i 's|#DEST="scp://user[:password]@other.host[:port]/[/]some_dir"|DEST="scp://'"$DEST_SCP"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="scp://user\[:password\]@other.host\[:port\]/\[/\]some_dir"|DEST="scp://'"$DEST_SCP"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_SSH" ]
     then
-        sed -i 's|#DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"|DEST="ssh://'"$DEST_SSH"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="ssh://user\[:password\]@other.host\[:port\]/\[/\]some_dir"|DEST="ssh://'"$DEST_SSH"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_SFTP" ]
     then
-        sed -i 's|#DEST="sftp://user[:password]@other.host[:port]/[/]some_dir"|DEST="sftp://'"$DEST_SFTP"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="sftp://user\[:password\]@other.host\[:port\]/\[/\]some_dir"|DEST="sftp://'"$DEST_SFTP"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_RSYNC" ]
     then
-        sed -i 's|#DEST="rsync://user@host.com[:port]//absolute_path"|#DEST="rsync://'"$DEST_RSYNC"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="rsync://user@host.com\[:port\]//absolute_path"|#DEST="rsync://'"$DEST_RSYNC"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_FTP" ]
     then
-        sed -i 's|#DEST="ftp://user[:password]@other.host[:port]/some_dir"|DEST="ftp://'"$DEST_FTP"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="ftp://user\[:password\]@other.host\[:port\]/some_dir"|DEST="ftp://'"$DEST_FTP"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_FTPS" ]
     then
-        sed -i 's|#DEST="ftps://user[:password]@other.host[:port]/some_dir"|DEST="ftps://'"$DEST_FTPS"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="ftps://user\[:password\]@other.host\[:port\]/some_dir"|DEST="ftps://'"$DEST_FTPS"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_FTPES" ]
     then
-        sed -i 's|#DEST="ftpes://user[:password]@other.host[:port]/some_dir"|DEST="ftpes://'"$DEST_FTPES"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="ftpes://user\[:password\]@other.host\[:port\]/some_dir"|DEST="ftpes://'"$DEST_FTPES"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$EXCLIST" ]
