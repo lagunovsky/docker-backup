@@ -23,7 +23,7 @@ This container based on [duplicity-backup](https://github.com/zertrin/duplicity-
 
 # Configuring
 
-See `docker-compose.env.example`
+See `.env.example`
 
 * [Base](#base)
 * [Exclude list of directories](#exclude-list-of-directories)
