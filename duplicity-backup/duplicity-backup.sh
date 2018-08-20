@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012-2016 Marc Gallet.
+# Copyright (c) 2012-2018 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -39,11 +39,13 @@
 #       the same folder as the script, if the option -c is not given).
 #       It is DEPRECATED to edit this.
 
-CONFIG="/duplicity-backup/duplicity-backup.conf"
+CONFIG="duplicity-backup.conf"
 
 ##############################################################
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
+
+DBSH_VERSION="v1.6.0"
 
 # make a backup of stdout and stderr for later
 exec 6>&1
@@ -107,12 +109,32 @@ if [ ! -x "${DUPLICITY}" ]; then
   exit 1
 fi
 
-version(){
-  # Read the version string from the file VERSION
-  VERSION=$(<VERSION)
+DUPLICITY_VERSION=$(${DUPLICITY} --version)
+DUPLICITY_VERSION=${DUPLICITY_VERSION//[^0-9\.]/}
 
-  echo "duplicity-backup.sh ${VERSION}"
-  ${DUPLICITY} --version
+version_compare() {
+    if [[ $1 =~ ^([0-9]+\.?)+$ && $2 =~ ^([0-9]+\.?)+$ ]]; then
+        local l=(${1//./ }) r=(${2//./ }) s=${#l[@]}; [[ ${#r[@]} -gt ${#l[@]} ]] && s=${#r[@]}
+
+        for i in $(seq 0 $((s - 1))); do
+            [[ ${l[$i]} -gt ${r[$i]} ]] && return 1
+            [[ ${l[$i]} -lt ${r[$i]} ]] && return 2
+        done
+
+        return 0
+    else
+        echo "Invalid version number given"
+        exit 1
+    fi
+}
+
+# set a flag if duplicity's version is lower than 0.7, for usage later in the script
+version_compare "${DUPLICITY_VERSION}" 0.7
+case $? in 2) LT07=1;; *) LT07=0;; esac
+
+version(){
+  echo "duplicity-backup.sh ${DBSH_VERSION}"
+  echo "duplicity ${DUPLICITY_VERSION}"
   exit 0
 }
 
@@ -169,7 +191,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
           QUIET=1
         ;;
         dry-run)
-          DRY_RUN="--dry-run "
+          DRY_RUN="--dry-run"
         ;;
         debug)
           ECHO=$(which echo)
@@ -196,7 +218,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
     l) COMMAND="list-current-files";;
     s) COMMAND="collection-status";;
     q) QUIET=1;;
-    n) DRY_RUN="--dry-run ";; # dry run
+    n) DRY_RUN="--dry-run";; # dry run
     d) ECHO=$(which echo);; # debug
     h)
       usage
@@ -283,7 +305,7 @@ fi
 # fd1 is stdout and is always logged but only shown if not QUIET
 # fd2 is stderr and is always shown on screen and logged
 # fd3 is like stdout but always shown on screen (for interactive prompts)
-# fd4 is always shown on sceen but never logged (for the usage text)
+# fd4 is always shown on screen but never logged (for the usage text)
 # fd5 is never shown on screen but always logged (for delimiters in the log)
 #
 
@@ -320,7 +342,13 @@ fi
 
 # ------------------------- Setting up variables ------------------------
 
-STATIC_OPTIONS="${DRY_RUN}${STATIC_OPTIONS}"
+if [ -n "${DRY_RUN}" ]; then
+  STATIC_OPTIONS="${DRY_RUN} ${STATIC_OPTIONS}"
+fi
+
+if [ -n "${STORAGECLASS}" ]; then
+  STATIC_OPTIONS="${STATIC_OPTIONS} ${STORAGECLASS}"
+fi
 
 SIGN_PASSPHRASE=${PASSPHRASE}
 
@@ -332,6 +360,7 @@ export SWIFT_USERNAME
 export SWIFT_PASSWORD
 export SWIFT_AUTHURL
 export SWIFT_AUTHVERSION
+export DPBX_ACCESS_TOKEN
 export PASSPHRASE
 export SIGN_PASSPHRASE
 
@@ -381,6 +410,9 @@ NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
 
+NO_B2CMD="WARNING: b2 not found in PATH, remote file size information \
+unavailable. Is the python-b2 package installed?"
+
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "gs" ]; then
@@ -423,6 +455,22 @@ else
   DEST_IS_S3=false
 fi
 
+if  [ "$(echo "${DEST}" | cut -c 1,4)" = "dpbx" ]; then
+  DEST_IS_DPBX=true
+else
+  DEST_IS_DPBX=false
+fi
+
+if  [ "$(echo "${DEST}" | cut -c 1,2)" = "b2" ]; then
+  DEST_IS_B2=true
+  B2CMD="$(which b2)"
+  if [ ! -x "${B2CMD}" ]; then
+    echo "${NO_B2CMD}"; B2CMD_AVAIL=false
+  fi
+else
+  DEST_IS_B2=false
+fi
+
 config_sanity_fail()
 {
   EXPLANATION=$1
@@ -446,6 +494,8 @@ check_variables ()
   config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
   [[ ( ${DEST_IS_GS} = true && (${GS_ACCESS_KEY_ID} = "foobar_gcs_key_id" || ${GS_SECRET_ACCESS_KEY} = "foobar_gcs_secret_id" )) ]] && \
   config_sanity_fail "A Google Cloud Storage DEST has been specified, but GS_ACCESS_KEY_ID or GS_SECRET_ACCESS_KEY have not been configured"
+  [[ ( ${DEST_IS_DPBX} = true && (${DPBX_ACCESS_TOKEN} = "foobar_dropbox_access_token" )) ]] && \
+  config_sanity_fail "A Dropbox DEST has been specified, but DPBX_ACCESS_TOKEN has not been configured"
   [[ ! -z "${INCEXCFILE}" && ! -f ${INCEXCFILE} ]] && config_sanity_fail "The specified INCEXCFILE ${INCEXCFILE} does not exists"
 }
 
@@ -521,21 +571,34 @@ email_logfile()
 
 send_notification()
 {
-  NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
   if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
+    echo "-----------[ Notification Request ]-----------"
+    NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
+
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
-      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"
     elif [ "${NOTIFICATION_SERVICE}" = "ifttt" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"value1\": \"${NOTIFICATION_CONTENT}\", \"value2\": \"${IFTTT_VALUE2}\"}" "${IFTTT_HOOK_URL}"
-      echo -e "IFTTT notification sent to Maker channel event ${IFTTT_EVENT}"
     elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       curl -s \
       -F "token=${PUSHOVER_TOKEN}" \
       -F "user=${PUSHOVER_USER}" \
       -F "message=${NOTIFICATION_CONTENT}" \
       https://api.pushover.net/1/messages
+    elif [ "${NOTIFICATION_SERVICE}" = "telegram" ]; then
+      curl -s --max-time 10 -d "chat_id=${TELEGRAM_CHATID}&disable_web_page_preview=1&text=${NOTIFICATION_CONTENT}" "https://api.telegram.org/bot${TELEGRAM_KEY}/sendMessage" >/dev/null
+    fi
+
+    echo -e "\n----------------------------------------------\n"
+
+    if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
+      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"
+    elif [ "${NOTIFICATION_SERVICE}" = "ifttt" ]; then
+      echo -e "IFTTT notification sent to Maker channel event ${IFTTT_EVENT}"
+    elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       echo -e "Pushover notification sent"
+    elif [ "${NOTIFICATION_SERVICE}" = "telegram" ]; then
+      echo -e "Telegram notification sent"
     fi
   fi
 }
@@ -625,7 +688,7 @@ get_remote_file_size()
     ;;
     "fi")
       FRIENDLY_TYPE_NAME="File"
-      TMPDEST=$(echo "${DEST}" | cut -c 6-)
+      TMPDEST="${DEST#file://*}"
       SIZE=$(du -hs "${TMPDEST}" | awk '{print $1}')
     ;;
     "gs")
@@ -654,6 +717,33 @@ get_remote_file_size()
           fi
       fi
     ;;
+    "b2")
+      FRIENDLY_TYPE_NAME="Backblaze B2"
+      if ${B2CMD_AVAIL}; then
+        if [[ -n ${FTP_PASSWORD} ]]; then
+          APP_KEY=${FTP_PASSWORD}
+        else
+          APP_KEY=$(echo "${DEST}" | cut -d":" -f 3 | cut -d"@" -f 1)
+        fi
+        ACC_ID=$(echo "${DEST}" | cut -d"/" -f 3 | cut -d"@" -f 1 | cut -d ":" -f 1)
+        BUCKET=$(echo "${DEST}" | cut -d"@" -f2 | cut -d"/" -f1)
+        if [[ -z ${APP_KEY} ]] || [[ -z ${ACC_ID} ]]; then
+          SIZE="-b2 authentication wrong-"
+          return
+        fi
+        if [[ -z ${BUCKET} ]]; then
+          SIZE="-b2 bucket wrong-"
+          return
+        fi
+        if [[ $(${B2CMD} authorize-account "${ACC_ID}" "${APP_KEY}" >/dev/null 2>&1) -ne 0 ]]; then
+          SIZE="-b2 authentication wrong-"
+          return
+        fi
+        SIZE=$(${B2CMD} ls --long "${BUCKET}" | awk '{ print $5 }' | paste -sd+ | bc | numfmt --to=iec)
+      else
+              SIZE="-b2 not found in PATH-"
+      fi
+    ;;
     *)
       # not yet available for the other backends
       FRIENDLY_TYPE_NAME=""
@@ -664,7 +754,7 @@ get_remote_file_size()
       echo -e "${SIZE}\t${FRIENDLY_TYPE_NAME} type backend"
   else
       echo "Destination disk use information is currently only available for the following storage backends:"
-      echo "File, SSH, Amazon S3 and Google Cloud"
+      echo "File, SSH, Amazon S3, Google Cloud and Backblaze B2"
   fi
   echo
 }
@@ -700,7 +790,11 @@ include_exclude()
 
   # Include/Exclude globbing filelist
   if [ "${INCEXCFILE}" != '' ]; then
-    TMP=" --include-globbing-filelist '${INCEXCFILE}'"
+    if [ ${LT07} -eq 1 ]; then
+      TMP=" --include-globbing-filelist '${INCEXCFILE}'"
+    else
+      TMP=" --include-filelist '${INCEXCFILE}'"
+    fi
     INCLUDE=${INCLUDE}${TMP}
   fi
 
@@ -746,7 +840,6 @@ duplicity_backup()
 {
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
-    "${STORAGECLASS}" \
     "${ENCRYPT}" \
     "${EXCLUDE}" \
     "${INCLUDE}" \
@@ -761,6 +854,7 @@ duplicity_cleanup_failed()
 {
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
+    "${ENCRYPT}" \
     "${DEST}"
   } || {
     BACKUP_ERROR=1
@@ -874,6 +968,11 @@ check_variables
 
 echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >&5
 
+echo -e "-------[ Program versions ]-------"
+echo -e "duplicity-backup.sh ${DBSH_VERSION}"
+echo -e "duplicity ${DUPLICITY_VERSION}"
+echo -e "----------------------------------\n"
+
 get_lock
 
 INCLUDE=
@@ -920,7 +1019,7 @@ case "${COMMAND}" in
     OPTION="cleanup"
 
     if [ -z "${DRY_RUN}" ]; then
-      STATIC_OPTIONS="--force"
+      STATIC_OPTIONS="${STATIC_OPTIONS} --force"
     fi
 
     echo -e "-------[ Cleaning up Destination ]-------\n"
@@ -1067,6 +1166,11 @@ unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset GS_ACCESS_KEY_ID
 unset GS_SECRET_ACCESS_KEY
+unset SWIFT_USERNAME
+unset SWIFT_PASSWORD
+unset SWIFT_AUTHURL
+unset SWIFT_AUTHVERSION
+unset DPBX_ACCESS_TOKEN
 unset PASSPHRASE
 unset SIGN_PASSPHRASE
 unset FTP_PASSWORD

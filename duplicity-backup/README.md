@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/zertrin/duplicity-backup.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup)
+[![Build Status](https://travis-ci.org/zertrin/duplicity-backup.sh.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup.sh)
 
 # duplicity-backup.sh
 
@@ -31,7 +31,7 @@ This means the following:
 
 ## Contributing
 
-The development version of the code is available at https://github.com/zertrin/duplicity-backup in the `dev` branch. It is a bleeding-edge version with the latests changes that have not yet been tested a lot, but that's the best starting point to contribute.
+The development version of the code is available at https://github.com/zertrin/duplicity-backup.sh in the `dev` branch. It is a bleeding-edge version with the latest changes that have not yet been tested a lot, but that's the best starting point to contribute.
 
 Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master or dev branch.
 
@@ -39,12 +39,12 @@ Here is how to do it:
 
 Fork the repository first and then clone your fork on your machine:
 
-    git clone git@github.com:YOURNAME/duplicity-backup.git
+    git clone git@github.com:YOURNAME/duplicity-backup.sh.git duplicity-backup
     cd duplicity-backup
 
 Add a remote for the upstream repository:
 
-    git remote add upstream git@github.com:zertrin/duplicity-backup.git
+    git remote add upstream git@github.com:zertrin/duplicity-backup.sh.git
     git fetch upstream
 
 Create a new topic branch for the changes you want to make, based on the `dev` branch from upstream:
@@ -57,7 +57,7 @@ Make your changes, test them, commit them and push them to Github:
 
 Open a Pull request from `YOURNAME:my-fix-1` to `zertrin:dev`.
 
-If you want to open another pull request for another change which is independant of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 upstream/dev`)
+If you want to open another pull request for another change which is independent of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 upstream/dev`)
 
 
 ## Installation
@@ -66,22 +66,25 @@ If you want to open another pull request for another change which is independant
 
 You can clone the repository (which makes it easy to get future updates):
 
-    git clone https://github.com/zertrin/duplicity-backup.git duplicity-backup
+    git clone https://github.com/zertrin/duplicity-backup.sh.git duplicity-backup
 
-If you prefer the stable version do:
+If you prefer the stable (but old) version do:
 
     git checkout stable
 
-... or if you want the latest version (might still have bugs), then:
+... or if you want the normal version, then:
 
     git checkout master
 
-... or if you like living on the edge, you can stay at the development version which is automatically cloned.
+... or if you like living on the edge (or need the latest bugfixes), you can stay at the development version which is automatically cloned.
 
 Or just download the ZIP file:
 
-* For the stable branch: https://github.com/zertrin/duplicity-backup/archive/stable.zip
-* For the normal branch: https://github.com/zertrin/duplicity-backup/archive/master.zip
+| Version       | Download link                                                     |
+|---------------|-------------------------------------------------------------------|
+| stable (old)  | https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip |
+| normal        | https://github.com/zertrin/duplicity-backup.sh/archive/master.zip |
+| latest        | https://github.com/zertrin/duplicity-backup.sh/archive/dev.zip    |
 
 ### 2. Configure the script
 
@@ -94,7 +97,7 @@ The script looks for its configuration by reading the path to the config file sp
 If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
 
 So be sure to either:
-* specify the configuration file path on the command line with the -c option **[recommended]**
+* specify the configuration file path on the command line with the `-c` option **[recommended]**
 * or to edit the `CONFIG` parameter in the script to match the actual location of your config file. **[deprecated]** _(will be removed in future versions of the script)_
 
 NOTE: to ease future updates of the script, you may prefer NOT to edit the script at all and to specify systematically the path to your config file on the command line with the `-c` or `--config` option.
@@ -120,13 +123,13 @@ else just download again the ZIP archive an extract it over the existing folder.
 
 Then compare the example config file (`duplicity-backup.conf.example`) with your modified version (for example `/etc/duplicity-backup.conf`) and adapt your copy to reflect the changes in the example file.
 
-Thare are many ways to do so, here are some examples (adapt the path to your actual files):
+There are many ways to do so, here are some examples (adapt the path to your actual files):
 
     diff duplicity-backup.conf.example /etc/duplicity-backup.conf
     vimdiff duplicity-backup.conf.example /etc/duplicity-backup.conf
 
 
-## Dependancies
+## Dependencies
 
 * [duplicity](http://duplicity.nongnu.org/)
 * Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
@@ -135,6 +138,9 @@ Thare are many ways to do so, here are some examples (adapt the path to your act
 
 For the [Amazon S3](https://aws.amazon.com/s3/) storage backend *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*
+
+For the [Backblaze B2](https://www.backblaze.com/b2) storage backend *`optional`*
+* [python-b2](https://pypi.python.org/pypi/b2) *`optional`*
 
 For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backend *`optional`*
 * [boto](https://github.com/boto/boto) (may already have been installed with duplicity)
@@ -246,14 +252,19 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
 ## Known issues
 
+### GPG error if system locale is not english
+
 If your system's locale is not english, an error can happen when duplicity is trying to encrypt the files with gpg. This problem concerns duplicity and has been reported upstream ([see bug report](https://bugs.launchpad.net/duplicity/+bug/510625)). A simple workaround is to set the following environement variable: `LANG=C`. For example: `LANG=C duplicity-backup.sh [-c config_file] ...` or in the cron `41 3 * * * LANG=C /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b`
 
+### "/dev/fd/62: Operation not supported" errors on FreeBSD
+
+See [issue #143](https://github.com/zertrin/duplicity-backup.sh/issues/143) for a fix.
 
 ## Troubleshooting
 
 This script attempts to simplify the task of running a duplicity command; if you are having any problems with the script the first step is to determine if the script is generating an incorrect command or if duplicity itself is causing your error.
 
-To see exactly what is happening when you run duplicity-backup, either pass the option `-d` or `--debug` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable. 
+To see exactly what is happening when you run duplicity-backup.sh, either pass the option `-d` or `--debug` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable.
 
 This will stop the script from running and will, instead, output the generated command into your log file. You can then check to see if what is being generated is causing an error or if it is duplicity causing you woe.
 
@@ -266,4 +277,4 @@ You can also try the `-n` or `--dry-run` option. This will make duplicity to cal
 * Show backup-ed files in today incremental backup email
 
 
-###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup/graphs/contributors) for their help.
+###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup.sh/graphs/contributors) for their help.

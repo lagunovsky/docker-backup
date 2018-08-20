@@ -14,7 +14,7 @@ set -e
 
     if [ -n "$DEST_FILE" ]
     then
-        sed -i 's|#DEST="file:///home/foobar_user_name/new-backup-test/"|DEST="file://'"$DEST_FILE"'"|g' /duplicity-backup/duplicity-backup.conf
+        sed -i 's|#DEST="file:///home/foobar_user_name/new-backup-test/"|DEST="file:///'"$DEST_FILE"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$DEST_SCP" ]
@@ -52,9 +52,29 @@ set -e
         sed -i 's|#DEST="ftpes://user\[:password\]@other.host\[:port\]/some_dir"|DEST="ftpes://'"$DEST_FTPES"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
+    if [ -n "$DEST_DPBX" ]
+    then
+        sed -i 's|#DEST="dpbx:///foobar_swift_container/some_dir"|DEST="dpbx:///'"$DEST_DPBX"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
+    if [ -n "$DEST_B2" ]
+    then
+        sed -i 's|#DEST="b2://some_account_id\[:some_application_key\]@some_bucket_name/some_dir"|DEST="b2://'"$DEST_B2"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
+    if [ -n "$DPBX_ACCESS_TOKEN" ]
+    then
+        sed -i 's|#DPBX_ACCESS_TOKEN="foobar_dropbox_access_token"|DPBX_ACCESS_TOKEN="'"$DPBX_ACCESS_TOKEN"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
+    if [ -n "$FTP_PASSWORD" ]
+    then
+        sed -i 's|#FTP_PASSWORD="password"|FTP_PASSWORD="'"$FTP_PASSWORD"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
     if [ -n "$EXCLIST" ]
     then
-        sed -i 's|#EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )|EXCLIST=( '"$EXCLIST"' )|g' /duplicity-backup/duplicity-backup.conf
+        sed -i "s|#EXCLIST=( '/home/foobar_user_name/Documents/foobar-to-exclude' )|EXCLIST=( "'$EXCLIST'" )|g" /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$EMAIL_TO" ]
@@ -89,6 +109,16 @@ set -e
     if [ -n "$IFTTT_HOOK_URL" ]
     then
         sed -i 's|IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY"|IFTTT_HOOK_URL="'"$IFTTT_HOOK_URL"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
+    if [ -n "$TELEGRAM_CHATID" ]
+    then
+        sed -i 's|TELEGRAM_CHATID=""|TELEGRAM_CHATID="'"$TELEGRAM_CHATID"'"|g' /duplicity-backup/duplicity-backup.conf
+    fi
+
+    if [ -n "$TELEGRAM_KEY" ]
+    then
+        sed -i 's|TELEGRAM_KEY=""|TELEGRAM_KEY="'"$TELEGRAM_KEY"'"|g' /duplicity-backup/duplicity-backup.conf
     fi
 
     if [ -n "$HOST_NAME" ]
